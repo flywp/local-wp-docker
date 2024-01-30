@@ -1,0 +1,63 @@
+services:
+  php:
+    image: 'meghsh/php:8.2'
+    volumes:
+      - './app:/var/www/html'
+      - './data/nginx/cache:/var/run/nginx-cache'
+    user: ${USER_ID}:${GROUP_ID}
+    environment:
+      - OPCACHE_ENABLE=1
+      - JIT_ENABLE=1
+      - PHP_MEMORY_LIMIT=512M
+      - UPLOAD_MAX_FILESIZE=100M
+    networks:
+      - site-network
+  
+  nginx:
+    image: 'nginxinc/nginx-unprivileged:alpine'
+    ports:
+      - ${PORT}:80
+    restart: always
+    environment:
+      - VIRTUAL_HOST=local-docker-site.test
+      - LETSENCRYPT_HOST=local-docker-site.test
+      - VIRTUAL_PORT=80
+    user: ${USER_ID}:${GROUP_ID}
+    volumes:
+      - './app:/var/www/html'
+      - './config/nginx/common:/etc/nginx/common'
+      - './config/nginx/default.conf:/etc/nginx/conf.d/default.conf'
+      - './config/nginx/nginx.conf:/etc/nginx/nginx.conf'
+      - './logs/nginx:/var/log/nginx'
+      - './data/nginx/temp:/var/cache/nginx'
+      - './data/nginx/cache:/var/run/nginx-cache'
+    networks:
+      - site-network
+    depends_on:
+      - php
+  
+  mysql:
+      image: mysql:8.0
+      container_name: mysql
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      volumes:
+        - ./data/mysql:/var/lib/mysql
+      environment:
+        - MYSQL_ROOT_PASSWORD=root
+        - MYSQL_DATABASE=wordpress
+      networks:
+        - site-network
+  
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: always
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - site-network
+
+networks:
+  site-network:
+    name: local-docker-site.test

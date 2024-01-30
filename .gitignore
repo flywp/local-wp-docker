@@ -1,0 +1,6 @@
+app/logs
+app/public
+config
+data
+logs
+.env
