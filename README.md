@@ -4,9 +4,10 @@ This repository is for testing local site without nginx proxy.
 
 ## Instructions
 
-Run `setup.sh`: this will create all required file and folders
+Clone the repo and run `setup.sh`: this will create all required file and folders
 
 ```bash
+git clone git@github.com:flywp/local-wp-docker.git
 bash setup.sh
 ```
 
@@ -19,4 +20,10 @@ Database name: wordpress
 Username: root
 Password: root
 Database Host: mysql
+```
+
+**Up the container:**
+
+```
+docker compose up -d
 ```
