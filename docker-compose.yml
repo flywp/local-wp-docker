@@ -4,7 +4,6 @@ services:
     volumes:
       - './app:/var/www/html'
       - './data/nginx/cache:/var/run/nginx-cache'
-    user: ${USER_ID}:${GROUP_ID}
     environment:
       - OPCACHE_ENABLE=1
       - JIT_ENABLE=1
@@ -22,7 +21,6 @@ services:
       - VIRTUAL_HOST=local-docker-site.test
       - LETSENCRYPT_HOST=local-docker-site.test
       - VIRTUAL_PORT=80
-    user: ${USER_ID}:${GROUP_ID}
     volumes:
       - './app:/var/www/html'
       - './config/nginx/common:/etc/nginx/common'
